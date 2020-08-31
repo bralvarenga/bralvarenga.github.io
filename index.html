@@ -28,9 +28,9 @@
 		var path = d3.geoPath()
 			.projection(projection);
 			
-		var color = d3.scaleThreshold()
+		var color = d3.scaleLinear()
 			.domain([0, 1])
-			.range(["rgb(19, 137, 134)", "#ccc"])
+			.range(["#ccc", "rgb(19, 137, 134)"])
 			
 		var promises = [
 		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
