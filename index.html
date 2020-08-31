@@ -2,41 +2,7 @@
 <meta charset="utf-8">
 
 <style>
-	
-	#tooltip{
-    
-	  display: block;
-	  position: absolute;
-	  top: 300px;
-	  left: 400px;
-	  max-width: 150px;
-	  z-index: 1000;
-	  background-color: white;
-	  padding: 5px;
-	  font-family: Raleway;
-	  font-size: 11px;
-	  opacity: 0;
-    
-	}
-  
-	.active {
-	  stroke-width: 1px;
-	  stroke: white;
-	}
 
-	.inactive {
-	  stroke: black;
-	  stroke-width: .25px;
-	}
-
-	#tooltip span.positive {
-	  color: red;
-	}
-
-	#tooltip span.negative {
-	  color: green;
-	}
-	
 </style>
 
 <body>
@@ -51,6 +17,10 @@
 		
 		var cobertura = new Map();
 		
+		var svg = d3.select("body").append("svg")
+			.attr("width", width)
+			.attr("height", height);
+			
 		var projection = d3.geoMercator()
 			.center([-50,-8])
 			.scale(1000);
@@ -69,56 +39,23 @@
 		})
 		]
 		
+		console.log(cobertura)
+		
 		Promise.all(promises).then(ready)
 		
 		function ready([geojson]){ 
 			
-			var svg = d3.select("body")
-				.append("svg")
-				.attr("width", width)
-				.attr("height", height);
-		
-			var tooltip = d3.select("body")
-    			.append("div")
-    			.attr("id","tooltip")
-    			.attr("pointer-events","none");
-			
-		  	  var g = svg.append("g")
-		        .on("mouseleave", function(){
-		          	d3.select("#tooltip")
-		            	.transition()
-		            	.style("opacity",0)
-		        })
-		        .on("mouseover", function(){
-		            d3.select("#tooltip")
-		            	.transition()
-		            	.style("opacity",1)
-		        })
-			
-			var path = g.selectAll("path")
+			svg.append("g")
+	        .selectAll("path")
 	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
 	      	.enter().append("path")
 			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "white";})
 	        .attr("d", path)
 			.style("stroke", "#fff")
-			.style("stroke-width", ".5px")
-	  	  	.attr("class","inactive")
-	        .on("mouseover",function(d){
-	          	var nome = cobertura.get(d.d.properties.CD_GEOCMU)[0];
-	          	d3.select(this)
-	            	.attr("class","active")
-	            	.raise();
-				d3.select("#tooltip").html(`${nome}`)
-			})
-			.on("mousemove", function(d,event){
-				let tooltipHeight = $("#tooltip").height();
-				    d3.select("#tooltip").style("left", () => d3.event.x + 15 + "px")
-				    d3.select("#tooltip").style("top", () => d3.event.y - tooltipHeight - 20 + "px")
-			})
-			.on("mouseleave",function(){
-			    d3.select(this)
-			    .attr("class","inactive")
-			})
+			.style("stroke-width", ".5px");
+			
+			console.log(geojson)
+			
 	};
 				
 	</script>	
