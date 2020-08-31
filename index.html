@@ -29,8 +29,8 @@
 			.projection(projection);
 			
 		var color = d3.scaleThreshold()
-			.domain([1])
-			.range(["rgb(19, 137, 134)"])
+			.domain([1, 0])
+			.range(["rgb(19, 137, 134)", "#ccc"])
 			
 		var promises = [
 		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
@@ -49,7 +49,7 @@
 	        .selectAll("path")
 	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
 	      	.enter().append("path")
-			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "#ccc";})
+			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "white";})
 	        .attr("d", path)
 			.style("stroke", "#fff")
 			.style("stroke-width", ".5px");
