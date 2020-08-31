@@ -95,8 +95,7 @@
 		            	.style("opacity",1)
 		        })
 			
-			var path = g
-			.selectAll("path")
+			var path = g.selectAll("path")
 	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
 	      	.enter().append("path")
 			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "white";})
@@ -105,7 +104,7 @@
 			.style("stroke-width", ".5px")
 	  	  	.attr("class","inactive")
 	        .on("mouseover",function(d){
-	          	var nome = cobertura.get(d.d.properties.CD_GEOCMU)[0]
+	          	var nome = cobertura.get(d.d.properties.CD_GEOCMU)[0];
 	          	d3.select(this)
 	            	.attr("class","active")
 	            	.raise();
