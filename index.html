@@ -102,7 +102,7 @@
 			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "white";})
 	        .attr("d", path)
 			.style("stroke", "#fff")
-			.style("stroke-width", ".5px");
+			.style("stroke-width", ".5px")
 	  	  	.attr("class","inactive")
 	        .on("mouseover",function(d){
 	          	var nome = cobertura.get(d.d.properties.CD_GEOCMU)[0]
