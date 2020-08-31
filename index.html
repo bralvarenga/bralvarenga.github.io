@@ -44,18 +44,6 @@
 			.domain([0, 1])
 			.range(["#ccc", "rgb(19, 137, 134)"])
 			
-		function mouseover(d){
-			div.html(cobertura.get(d.properties.CD_GEOCMU)[0])
-			.style("left", (d3.event.pageX + 9) + "px")
-			.style("top", (d3.event.pageY - 43) + "px")
-			.style("opacity", 0)	
-			}
-			
-		function mouseover(d){
-			div
-			.style("opacity", 0)	
-			}
-			
 		var promises = [
 		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
 		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) {
@@ -63,23 +51,9 @@
 		})
 		]
 		
-		console.log(cobertura)
-		
 		Promise.all(promises).then(ready)
 		
 		function ready([geojson]){ 
-			
-			function mouseover(d){
-				div.html(cobertura.get(d.properties.CD_GEOCMU)[0])
-				.style("left", (d3.event.pageX + 9) + "px")
-				.style("top", (d3.event.pageY - 43) + "px")
-				.style("opacity", 0)	
-				};
-			
-			function mouseout(d){
-				div
-				.style("opacity", 0)	
-				};
 			
 			svg.append("g")
 	        .selectAll("path")
@@ -92,7 +66,18 @@
 			.on("mouseover", mouseover)
 			.on("mouseout", mouseout);
 			
-			console.log(geojson)
+			function mouseover(d){
+				var nome = cobertura.get(d.properties.CD_GEOCMU)[0]
+				div.html(nome)
+				.style("left", (d3.event.pageX + 9) + "px")
+				.style("top", (d3.event.pageY - 43) + "px")
+				.style("opacity", 0)	
+				};
+			
+			function mouseout(d){
+				div
+				.style("opacity", 0)	
+				};
 			
 	};
 				
