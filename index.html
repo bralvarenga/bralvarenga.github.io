@@ -28,9 +28,14 @@
 		var path = d3.geoPath()
 			.projection(projection);
 			
+		var color = d3.scaleThreshold()
+			.domain([1])
+			.range(["rgb(19, 137, 134)"])
+			
 		var promises = [
 		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
-		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) { 			cobertura.set(d.id, [d.municipio, +d.populacao_2020, +d.valor0119, +d.valor0719, +d.valor0120])
+		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) {
+			cobertura.set(d.id, [d.municipio, +d.populacao_2020, +d.valor0119, +d.valor0719, +d.valor0120])
 		})
 		]
 		
@@ -44,10 +49,7 @@
 	        .selectAll("path")
 	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
 	      	.enter().append("path")
-			.attr("fill", function(d) { 
-				let color = cobertura.get(d.properties.CD_GEOCMU)[2];
-				return color ? "rgb(19, 137, 134)": "#ccc";
-				})
+			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "#ccc";})
 	        .attr("d", path)
 			.style("stroke", "#fff")
 			.style("stroke-width", ".5px");
