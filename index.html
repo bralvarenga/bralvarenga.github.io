@@ -8,14 +8,14 @@
 <body>
 
 <html>
-	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="https://d3js.org/d3.v6.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
 
 	<script>	
 		var width = 900,
 		    height = 750
 		
-		var cobertura = d3.map();
+		var cobertura = new Map();
 		
 		var svg = d3.select("body").append("svg")
 			.attr("width", width)
@@ -30,7 +30,8 @@
 			
 		var promises = [
 		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
-		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) { cobertura.set(d.id, +d.valor); })
+		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) { 			cobertura.set(d.id, [+d.populacao_2020, +d.valor0119, +d.valor0719, +valor0120])
+		})
 		]
 		
 		console.log(cobertura)
