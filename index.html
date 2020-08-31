@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+
+</style>
+
+<body>
+
+<html>
+	<script src="https://d3js.org/d3.v5.min.js"></script>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
+
+	<script>	
+		var width = 900,
+		    height = 750
+		
+		var cobertura = d3.map();
+		
+		var svg = d3.select("body").append("svg")
+			.attr("width", width)
+			.attr("height", height);
+			
+		var projection = d3.geoMercator()
+			.center([-50,-8])
+			.scale(1000);
+			
+		var path = d3.geoPath()
+			.projection(projection);
+			
+		var promises = [
+		d3.json("https://gist.githubusercontent.com/bralvarenga/950453b4778e419405293b7b96b186fb/raw/166c2a7ce12f39dd841da07897c6ec784fda169f/BRMUE250GC_SIRtopo.json"),
+		d3.tsv("https://gist.githubusercontent.com/bralvarenga/ccafc43b036b550f036639d981f9f5c6/raw/9f3af04dfa6375ff9b3281e5d3dd70fa1f87a73c/lop.tsv", function(d) { cobertura.set(d.id, +d.valor); })
+		]
+		
+		console.log(cobertura)
+		
+		Promise.all(promises).then(ready)
+		
+		function ready([geojson]){ 
+			
+			svg.append("g")
+	        .selectAll("path")
+	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
+	      	.enter().append("path")
+			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) == 1 ? "rgb(19, 137, 134)": "#ccc";})
+	        .attr("d", path)
+			.style("stroke", "#fff")
+			.style("stroke-width", ".5px");
+			
+			console.log(geojson)
+			
+	};
+				
+	</script>	
+</body>
