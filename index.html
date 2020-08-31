@@ -9,7 +9,7 @@
 
 <html>
 	<script src="https://d3js.org/d3.v5.min.js"></script>
-	<script src="http://d3js.org/topojson.v2.min.js"></script>
+	<script src="https://d3js.org/topojson.v2.min.js"></script>
 
 	<script>	
 		var width = 900,
@@ -29,8 +29,8 @@
 			.projection(projection);
 			
 		var promises = [
-		d3.json("https://gist.githubusercontent.com/bralvarenga/950453b4778e419405293b7b96b186fb/raw/166c2a7ce12f39dd841da07897c6ec784fda169f/BRMUE250GC_SIRtopo.json"),
-		d3.tsv("https://gist.githubusercontent.com/bralvarenga/ccafc43b036b550f036639d981f9f5c6/raw/9f3af04dfa6375ff9b3281e5d3dd70fa1f87a73c/lop.tsv", function(d) { cobertura.set(d.id, +d.valor); })
+		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
+		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) { cobertura.set(d.id, +d.valor); })
 		]
 		
 		console.log(cobertura)
