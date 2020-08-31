@@ -44,7 +44,10 @@
 	        .selectAll("path")
 	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
 	      	.enter().append("path")
-			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU)[2] ? "rgb(19, 137, 134)": "#ccc";})
+			.attr("fill", function(d) { 
+				let color = cobertura.get(d.properties.CD_GEOCMU)[2];
+				return color ? "rgb(19, 137, 134)": "#ccc";
+				})
 	        .attr("d", path)
 			.style("stroke", "#fff")
 			.style("stroke-width", ".5px");
