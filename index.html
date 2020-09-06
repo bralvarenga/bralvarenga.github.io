@@ -40,11 +40,11 @@
 	position: absolute;
 	top: 470px;
 	left: 120px;
-	width: 100px;
+	width: 125px;
 	color: white;
 	background-color: rgb(19, 137, 134);
 	border: white;
-	padding: 10px;
+	padding: 12px;
 	font-size: 15px;
 	}
 	
@@ -241,7 +241,7 @@
       		  	.attr("id", "year")
       		  	.style("font-size", "45px")
       		  	.style("fill", "black")
-      		  	.style("opacity", 0);
+      		  	.style("opacity", 1);
 				
 			var populacao = cobertura.get("1")[2];
 			var proporcao = cobertura.get("1")[2]/cobertura.get("1")[1];
@@ -300,7 +300,6 @@
 			d3.select("#start").on("click", function(event){
 				d3.select(this).transition().style("opacity",0)
 				d3.select("#title").transition().style("opacity", 0).remove();
-				d3.select("#year").transition().style("opacity",1)
 				d3.select("#contagem").transition().style("opacity",1)
 				d3.select("#contagem2").transition().style("opacity",1)
 				d3.select("#contagem3").transition().style("opacity",1)
