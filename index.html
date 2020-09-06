@@ -1,26 +1,146 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<style>
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
+<style>
+	
+	text {
+	font-family: "Raleway"
+	  }
+	  
+	
+	.f-headline {
+		font-family: Georgia, Times New Roman, serif;
+	    font-size: 2.5em;
+	    line-height: 1.00;
+		font-weight: 600;
+	    margin-bottom:.357em
+	}
+	
+	.f-lead {
+	    font-size:1.2em
+	}
+	
+	.f-article__header {
+	    padding: 1.em 0
+	}
+	
+	.f-container {
+	    max-width: 1900px;
+	    min-width: 260px;
+	    width: 100%;
+	    padding: 0 10px;
+	    margin:0 auto
+	}
+	
+	#start{
+	display: block;
+	position: absolute;
+	top: 470px;
+	left: 120px;
+	width: 100px;
+	color: white;
+	background-color: rgb(19, 137, 134);
+	border: white;
+	padding: 10px;
+	font-size: 15px;
+	}
+	
+	.noselect {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+	                                  supported by Chrome and Opera */
+	}
+	
+	#tooltip{
+	display: block;
+	position: absolute;
+	top: 300px;
+	left: 400px;
+	max-width: 150px;
+	z-index: 1000;
+	background-color: white;
+	padding: 5px;
+	font-family: Raleway;
+	font-size: 11px;
+	opacity: 0;
+	}
+	
+	.active {
+	stroke-width: 1px;
+	stroke: white;
+	}
+	
+	.inactive {
+	stroke: black;
+	stroke-width: .30px;
+	}
+	
+	#tooltip span.positive {
+	color: red;
+	}
+	
+	#tooltip span.negative {
+	color: green;
+	}
+	
+	#title {
+	font-family: Raleway;
+	position: absolute;
+	display: block;
+	margin: 20px;
+	fill: white;
+	font-size: 35px;
+	box-shadow: 2px solid black;
+	}
+	
+	.estados{
+	fill: none;
+	stroke: white;
+	stroke-width: 1.35px;
+	}
+	
+	text.label {
+	fill: white;
+	}
+	
+	g.legendLinear{
+	background-color: white;
+	}
+	  
+	  
 </style>
 
-<body>
 
 <html>
-	<script src="https://d3js.org/d3.v6.min.js"></script>
-	<script src="https://d3js.org/topojson.v2.min.js"></script>
+<body>
 
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://d3js.org/d3.v6.min.js"></script>
+	<script src="http://d3js.org/topojson.v2.min.js"></script>
+
+	<div class="f-container">
+	        <header class="f-article__header">
+	            <h1 itemprop="headline" class="f-headline">Cobertura do TRIP no Brasil</h1>
+	            <p itemprop="alternativeHeadline" class="f-lead">Evolução e futuro do Transporte Rodoviário Interestadual de Passageiros</p>
+	</div>
+	
 	<script>	
-		var width = 900,
-		    height = 750
+		var width = 900;
+		var	height = 750;
+		var margin = {top: 0, bottom: 0, left: 0, right: 0};
 		
 		var cobertura = new Map();
+		var startYear = 2017;
+		var year = startYear;
 		
-		var svg = d3.select("body").append("svg")
-			.attr("width", width)
-			.attr("height", height);
-			
 		var projection = d3.geoMercator()
 			.center([-50,-8])
 			.scale(1000);
@@ -30,33 +150,218 @@
 			
 		var color = d3.scaleLinear()
 			.domain([0, 1])
-			.range(["#ccc", "rgb(19, 137, 134)"])
+			.range(["#cecece", "rgb(19, 137, 134)"]);
+			
+		//["#ffffff","#f2f2f2","#e2e2e2","#cecece","#b4b4b4","#979797","#7a7a7a","#5f5f5f","#404040","#1e1e1e","#000000"] Gray scale
+		// https://observablehq.com/@d3/color-schemes
 			
 		var promises = [
-		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BRMUE250GC_SIRtopo.json"),
+		d3.json("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/BR.json"),
 		d3.tsv("https://raw.githubusercontent.com/bralvarenga/bralvarenga.github.io/master/lop.tsv", function(d) {
-			cobertura.set(d.id, [d.municipio, +d.populacao_2020, +d.valor0119, +d.valor0719, +d.valor0120])
-		})
-		]
-		
-		console.log(cobertura)
+			cobertura.set(d.id, [d.municipio, +d.populacao_2020, +d.valor0117, +d.valor0118, +d.valor0119, +d.valor0120, +d.valor0121])
+			})
+		];
 		
 		Promise.all(promises).then(ready)
 		
 		function ready([geojson]){ 
 			
-			svg.append("g")
-	        .selectAll("path")
-	        .data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
-	      	.enter().append("path")
-			.attr("fill", function(d) { return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]): "white";})
-	        .attr("d", path)
-			.style("stroke", "#fff")
-			.style("stroke-width", ".5px");
+			var zoomExtent = d3.zoom().scaleExtent([1, 20]);
 			
-			console.log(geojson)
+			function zoom(event) {
+			g.attr("transform", event.transform)
+			};
+			
+			var svg = d3.select("body")
+				.append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.bottom + margin.top)
+				.style("background-color","white")
+				.call(zoomExtent
+					.on("zoom", zoom));
+			
+		   	var tooltip = d3.select("body")
+				.append("div")
+				.attr("id","tooltip")
+				.attr("pointer-events","none")
+			
+			var g = svg.append("g")
+				.attr("class", "municipios")
+				.attr("transform",`translate(8,${margin.top})`)
+				.on("mouseleave", function(){
+					d3.select("#tooltip")
+					.transition()
+					.style("opacity",0)
+					})
+				.on("mouseover", function(){
+					d3.select("#tooltip")
+					.transition()
+					.style("opacity",0.9)
+					})
+					
+			d3.select("text.label").text("1.0%")
+			
+			var paths = g.selectAll("path")
+				.data(topojson.feature(geojson, geojson.objects.BRMUE250GC_SIR).features)
+				.enter().append("path")
+				.attr("fill", function(d){
+					return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[2]) : "white";
+				})
+				.attr("d", path)
+				.attr("class","inactive")
+				.on("mouseover",function(event, d){									// Não funcionava pq faltava event
+					var municipio = (cobertura.get(d.properties.CD_GEOCMU)[0]);
+					d3.select(this)
+					.attr("class","active")
+					//.raise();
+			
+					//d3.selectAll(".estados").raise();
+				
+					d3.select("#tooltip").html(municipio);
+				})
+				.on("mousemove", function(event, d){
+					let tooltipHeight = $("#tooltip").height();
+					d3.select("#tooltip").style("left", () => event.x + 15 + "px")
+					d3.select("#tooltip").style("top", () => event.y - tooltipHeight - 20 + "px")
+				})
+				.on("mouseleave",function(){
+					d3.select(this)
+					.attr("class","inactive")
+				})
+			
+			g.append("path")
+				.datum(topojson.mesh(geojson, geojson.objects.BRUFE250GC_SIR, function(a, b) { return a !== b; }))
+				.attr("class", "estados")
+				.attr("d", path);
+			
+			svg.append("text")
+      		  	.text(startYear)
+      		  	.attr("x", width - 370)
+      		  	.attr("y", 56)
+      		  	.attr("id", "year")
+      		  	.style("font-size", "45px")
+      		  	.style("fill", "black")
+      		  	.style("opacity", 0);
+				
+			var populacao = cobertura.get("1")[2];
+			var proporcao = cobertura.get("1")[2]/cobertura.get("1")[1];
+			var BR = d3.formatLocale({"decimal": ",", "thousands": ".", "grouping":[3], "currency":"R$"});
+			var format = BR.format(",d");
+			var formatter = d3.format(".2%");
+			
+			svg.append("text")
+				.text("População atendida:")
+      		  	.attr("x",width - 720)
+      		  	.attr("y",450)
+				.attr("text-anchor", "middle")
+      		  	.attr("id","contagem")
+      		  	.style("font-size", "25px")
+      		  	.style("fill","black")
+      		  	.style("opacity",0)
+			
+			svg.append("text")
+				.text(format(populacao))
+      		  	.attr("x",width - 720)
+      		  	.attr("y",480)
+      		  	.attr("id","contagem2")
+				.attr("text-anchor", "middle")
+      		  	.style("font-size", "25px")
+				.style("font-family", "sans-serif")
+      		  	.style("fill","black")
+      		  	.style("opacity",0)
+			
+			svg.append("text")
+				.text("Proporção da população:")
+      		  	.attr("x",width - 720)
+      		  	.attr("y",530)
+				.attr("text-anchor", "middle")
+      		  	.attr("id","contagem3")
+      		  	.style("font-size", "25px")
+      		  	.style("fill","black")
+      		  	.style("opacity",0)
+			
+			svg.append("text")
+				.text(formatter(proporcao.toFixed(2)))
+      		  	.attr("x",width - 720)
+      		  	.attr("y",560)
+				.attr("text-anchor", "middle")
+      		  	.attr("id","contagem4")
+      		  	.style("font-size", "25px")
+				.style("font-family", "sans-serif")
+      		  	.style("fill","black")
+      		  	.style("opacity",0)
+				
+			d3.select("body")
+    			.append("button")
+    			.attr("type","button")
+    			.text("Início")
+    			.attr("id","start");
+				
+			d3.select("#start").on("click", function(event){
+				d3.select(this).transition().style("opacity",0)
+				d3.select("#title").transition().style("opacity", 0).remove();
+				d3.select("#year").transition().style("opacity",1)
+				d3.select("#contagem").transition().style("opacity",1)
+				d3.select("#contagem2").transition().style("opacity",1)
+				d3.select("#contagem3").transition().style("opacity",1)
+				d3.select("#contagem4").transition().style("opacity",1)
+				var runAnimation = setInterval(wrapper, 2500);
+				function wrapper(){
+					if (year < 2021){
+						year++
+						recolor(year);
+					}
+				}
+			})
+			
+			function recolor(x){
+				d3.selectAll(".inactive")
+				.transition()
+				.duration(1500)
+				.attr("fill", function(d){
+					return cobertura.get(d.properties.CD_GEOCMU) ? color(cobertura.get(d.properties.CD_GEOCMU)[x-startYear+2]) : "white";
+				})
+				
+				if (year == 2021)
+					{$("#year").text("Futuro");}
+				else 
+					{$("#year").text(year);}
+				
+				$("#contagem2").text(format(cobertura.get("1")[x-startYear+2]));
+				$("#contagem4").text(formatter(cobertura.get("1")[x-startYear+2]/cobertura.get("1")[1]));
+								
+			}    	
+			
+			svg.append("circle").attr("cx",600).attr("cy",600).attr("r", 6).style("fill", "rgb(19, 137, 134)")
+			svg.append("circle").attr("cx",600).attr("cy",620).attr("r", 6).style("fill", "#cecece")
+			svg.append("text").attr("x", 615).attr("y", 605).text("Com TRIP").style("font-size", "15px").attr("alignment-baseline","middle")
+			svg.append("text").attr("x", 615).attr("y", 625).text("Sem TRIP").style("font-size", "15px").attr("alignment-baseline","middle")
+			
+			svg.append("text")
+				.attr("x", 500)
+				.attr("y", 670)
+				.attr("id","rodape")
+				.attr('text-anchor', "start")
+				.style("font-size", "8px")
+				.text("A projeção para o futuro agrega os municípios já cobertos pelo TRIP em 2020")
+			
+			svg.append("text")
+				.attr("x", 500)
+				.attr("y", 680)
+				.attr("id","rodape2")
+				.attr('text-anchor', "start")
+				.style("font-size", "8px")
+				.text("com todos os pedidos de mercados realizados junto à ANTT até 03/07/2020.")	
+			
+				
+			
+			
+			
 			
 	};
-				
-	</script>	
+					
+	</script>
+	
 </body>
+</html>
+
